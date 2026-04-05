@@ -1,0 +1,129 @@
+// Supritha Ramesha
+// ITMD 541-01 Graduate Student
+
+(function () {
+
+  /* =============================================
+     1a. Change the main headline text in the hero section.
+     ============================================= */
+  const heroHeadline = document.querySelector('.hero h1');
+  if (heroHeadline) {
+    heroHeadline.textContent = 'Uplift Your Brand with Stellar Marketing';
+  }
+
+  /* =============================================
+     1b. Change the subtext below the hero headline (bold + italic on specific words).
+     ============================================= */
+  const heroSubtext = document.querySelector('.hero p');
+  if (heroSubtext) {
+    heroSubtext.innerHTML =
+      'Utilize cutting-edge strategies from Stellar Marketing to help your business <strong>thrive</strong> and <em>excel</em>.';
+  }
+
+  /* =============================================
+     1c. Change the hero background image to the picsum photo.
+     ============================================= */
+  const heroSection = document.querySelector('.hero');
+  if (heroSection) {
+    heroSection.style.backgroundImage = 'url(https://picsum.photos/id/683/1280/720)';
+    heroSection.style.backgroundSize = 'cover';
+    heroSection.style.backgroundPosition = 'center';
+  }
+
+  /* =============================================
+     1d. Remove the "Get Started" CTA button from the hero.
+     ============================================= */
+  const ctaButton = document.querySelector('.hero a');
+  if (ctaButton) {
+    ctaButton.remove();
+  }
+
+  /* =============================================
+     1e. Change the nav background color to match the footer background color.
+     ============================================= */
+  const footer = document.querySelector('footer');
+  const nav = document.querySelector('nav');
+  if (footer && nav) {
+    const footerBgColor = window.getComputedStyle(footer).backgroundColor;
+    nav.style.backgroundColor = footerBgColor;
+  }
+
+  /* =============================================
+     2a. Change the service icons color to #47C714.
+     ============================================= */
+  const serviceIcons = document.querySelectorAll('.material-symbols-outlined');
+  serviceIcons.forEach(function (icon) {
+    icon.style.color = '#47C714';
+  });
+
+  /* =============================================
+     2b. Change the digital marketing icon to 'ads_click'
+         (Material Symbols Outlined uses text content as the icon name).
+     ============================================= */
+  const allIcons = document.querySelectorAll('.material-symbols-outlined');
+  if (allIcons.length > 0) {
+    // The digital marketing icon is the first one in the services section
+    allIcons[0].textContent = 'ads_click';
+  }
+
+  /* =============================================
+     3a. Change the Specialized Marketing Solutions tiles layout to
+         4 across at >= 1024px (inject a <style> tag with CSS).
+     ============================================= */
+  const styleTag = document.createElement('style');
+  styleTag.textContent = `
+    @media (min-width: 1024px) {
+      .solutions-grid,
+      .specialized-section .grid,
+      #specialized .grid {
+        grid-template-columns: repeat(4, 1fr) !important;
+      }
+    }
+  `;
+  document.head.appendChild(styleTag);
+
+  /* =============================================
+     3b. Change the Musicians image to the new picsum photo.
+     ============================================= */
+  const solutionImages = document.querySelectorAll('.solutions-grid img, #specialized img');
+  solutionImages.forEach(function (img) {
+    // Match by alt text or by being the last/4th image tile
+    if (
+      (img.alt && img.alt.toLowerCase().includes('music')) ||
+      (img.src && img.src.toLowerCase().includes('music'))
+    ) {
+      img.src = 'https://picsum.photos/id/453/400/300';
+      img.alt = 'Musicians';
+    }
+  });
+
+  /* =============================================
+     4. GRADUATE REQUIREMENT
+     Intercept form submission — prevent broken URL redirect.
+     Validate name + email, then show appropriate alert.
+     ============================================= */
+  const contactForm = document.querySelector('form');
+  if (contactForm) {
+    contactForm.addEventListener('submit', function (e) {
+      // Prevent form from going to broken contact.html URL
+      e.preventDefault();
+
+      const nameInput  = contactForm.querySelector('input[name="name"], input[id="name"], input[type="text"]');
+      const emailInput = contactForm.querySelector('input[name="email"], input[id="email"], input[type="email"]');
+
+      const nameValue  = nameInput  ? nameInput.value.trim()  : '';
+      const emailValue = emailInput ? emailInput.value.trim() : '';
+
+      // Show thank-you alert if both name and email are filled in
+      if (nameValue && emailValue) {
+        alert(`Thank you, ${nameValue}! We will be in touch with you shortly at ${emailValue}.`);
+      } else {
+        // Show error alert if name or email is missing
+        alert('Please provide a name and email.');
+      }
+    });
+  }
+
+  console.log('Lab 4 IIFE ran successfully.');
+
+})();
