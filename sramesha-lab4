@@ -6,24 +6,24 @@
   /* =============================================
      1a. Change the main headline text in the hero section.
      ============================================= */
-  const heroHeadline = document.querySelector('.hero h1');
+  const heroHeadline = document.querySelector('h1');
   if (heroHeadline) {
     heroHeadline.textContent = 'Uplift Your Brand with Stellar Marketing';
   }
 
   /* =============================================
-     1b. Change the subtext below the hero headline (bold + italic on specific words).
+     1b. Change the subtext below the hero headline (bold + italic).
      ============================================= */
-  const heroSubtext = document.querySelector('.hero p');
+  const heroSection = document.querySelector('section');
+  const heroSubtext = heroSection ? heroSection.querySelector('p') : null;
   if (heroSubtext) {
     heroSubtext.innerHTML =
       'Utilize cutting-edge strategies from Stellar Marketing to help your business <strong>thrive</strong> and <em>excel</em>.';
   }
 
   /* =============================================
-     1c. Change the hero background image to the picsum photo.
+     1c. Change the hero background image.
      ============================================= */
-  const heroSection = document.querySelector('.hero');
   if (heroSection) {
     heroSection.style.backgroundImage = 'url(https://picsum.photos/id/683/1280/720)';
     heroSection.style.backgroundSize = 'cover';
@@ -33,49 +33,45 @@
   /* =============================================
      1d. Remove the "Get Started" CTA button from the hero.
      ============================================= */
-  const ctaButton = document.querySelector('.hero a');
-  if (ctaButton) {
-    ctaButton.remove();
-  }
+  const allLinks = document.querySelectorAll('a, button');
+  allLinks.forEach(function (el) {
+    if (el.textContent.trim() === 'Get Started') {
+      el.remove();
+    }
+  });
 
   /* =============================================
-     1e. Change the nav background color to match the footer background color.
+     1e. Change the nav background color to match the footer color.
      ============================================= */
   const footer = document.querySelector('footer');
-  const nav = document.querySelector('nav');
+  const nav = document.querySelector('header, nav');
   if (footer && nav) {
-    const footerBgColor = window.getComputedStyle(footer).backgroundColor;
-    nav.style.backgroundColor = footerBgColor;
+    const footerBg = window.getComputedStyle(footer).backgroundColor;
+    nav.style.backgroundColor = footerBg;
   }
 
   /* =============================================
      2a. Change the service icons color to #47C714.
      ============================================= */
-  const serviceIcons = document.querySelectorAll('.material-symbols-outlined');
-  serviceIcons.forEach(function (icon) {
+  document.querySelectorAll('.material-symbols-outlined').forEach(function (icon) {
     icon.style.color = '#47C714';
   });
 
   /* =============================================
-     2b. Change the digital marketing icon to 'ads_click'
-         (Material Symbols Outlined uses text content as the icon name).
+     2b. Change the digital marketing icon to 'ads_click'.
      ============================================= */
-  const allIcons = document.querySelectorAll('.material-symbols-outlined');
-  if (allIcons.length > 0) {
-    // The digital marketing icon is the first one in the services section
-    allIcons[0].textContent = 'ads_click';
+  const icons = document.querySelectorAll('.material-symbols-outlined');
+  if (icons.length > 0) {
+    icons[0].textContent = 'ads_click';
   }
 
   /* =============================================
-     3a. Change the Specialized Marketing Solutions tiles layout to
-         4 across at >= 1024px (inject a <style> tag with CSS).
+     3a. Change specialized solutions layout to 4 across at >= 1024px.
      ============================================= */
   const styleTag = document.createElement('style');
   styleTag.textContent = `
     @media (min-width: 1024px) {
-      .solutions-grid,
-      .specialized-section .grid,
-      #specialized .grid {
+      .grid, [class*="grid"], [class*="solutions"], [class*="tiles"] {
         grid-template-columns: repeat(4, 1fr) !important;
       }
     }
@@ -85,44 +81,48 @@
   /* =============================================
      3b. Change the Musicians image to the new picsum photo.
      ============================================= */
-  const solutionImages = document.querySelectorAll('.solutions-grid img, #specialized img');
-  solutionImages.forEach(function (img) {
-    // Match by alt text or by being the last/4th image tile
-    if (
-      (img.alt && img.alt.toLowerCase().includes('music')) ||
-      (img.src && img.src.toLowerCase().includes('music'))
-    ) {
+  document.querySelectorAll('img').forEach(function (img) {
+    const parent = img.closest('div, figure, li');
+    if (parent && parent.textContent.toLowerCase().includes('musician')) {
       img.src = 'https://picsum.photos/id/453/400/300';
-      img.alt = 'Musicians';
     }
   });
 
   /* =============================================
-     4. GRADUATE REQUIREMENT
-     Intercept form submission — prevent broken URL redirect.
-     Validate name + email, then show appropriate alert.
+     4. GRADUATE: Intercept form, validate, show alert.
+        Clone form to remove duplicate listeners from
+        running the IIFE multiple times in the console.
      ============================================= */
   const contactForm = document.querySelector('form');
   if (contactForm) {
-    contactForm.addEventListener('submit', function (e) {
+
+    // Clone to strip any previously attached event listeners
+    const freshForm = contactForm.cloneNode(true);
+    contactForm.parentNode.replaceChild(freshForm, contactForm);
+
+    freshForm.addEventListener('submit', function (e) {
       // Prevent form from going to broken contact.html URL
       e.preventDefault();
 
-      const nameInput  = contactForm.querySelector('input[name="name"], input[id="name"], input[type="text"]');
-      const emailInput = contactForm.querySelector('input[name="email"], input[id="email"], input[type="email"]');
+      // Get inputs by position (index 0 = Name, index 1 = Email)
+      // This avoids issues with type attributes not being set explicitly
+      const allInputs = freshForm.querySelectorAll('input');
+      const nameValue  = allInputs[0] ? allInputs[0].value.trim() : '';
+      const emailValue = allInputs[1] ? allInputs[1].value.trim() : '';
 
-      const nameValue  = nameInput  ? nameInput.value.trim()  : '';
-      const emailValue = emailInput ? emailInput.value.trim() : '';
-
-      // Show thank-you alert if both name and email are filled in
+      // If both name and email are provided, show thank you alert
       if (nameValue && emailValue) {
-        alert(`Thank you, ${nameValue}! We will be in touch with you shortly at ${emailValue}.`);
+        alert('Thank you, ' + nameValue + '! We will be in touch with you shortly at ' + emailValue + '.');
       } else {
-        // Show error alert if name or email is missing
+        // If name or email is missing, show error alert
         alert('Please provide a name and email.');
       }
     });
   }
+
+  console.log('Lab 4 IIFE ran successfully.');
+
+})();
 
   console.log('Lab 4 IIFE ran successfully.');
 
